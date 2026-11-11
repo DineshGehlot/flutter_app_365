@@ -16,7 +16,7 @@ class Player {
     required this.name,
     this.isHuman = false,
     List<CardModel>? hand,
-  })  : hand = hand ?? const [],
+  })  : hand = hand ?? [],
         bid = 0,
         handsWon = 0,
         roundScore = 0,
