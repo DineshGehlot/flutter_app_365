@@ -30,6 +30,19 @@ class CardWidget extends StatelessWidget {
   }
 
   Widget _buildFaceUpCard() {
+    // Try to load image asset first, fall back to programmatic rendering
+    return Image.asset(
+      'assets/images/cards/${card.assetName}',
+      width: width,
+      height: height,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) {
+        return _buildProgrammaticFaceUpCard();
+      },
+    );
+  }
+
+  Widget _buildProgrammaticFaceUpCard() {
     final isRed = card.suit == Suit.hearts || card.suit == Suit.diamonds;
     return Container(
       width: width,
@@ -72,16 +85,25 @@ class CardWidget extends StatelessWidget {
   }
 
   Widget _buildFaceDownCard() {
-    return Container(
+    // Try to load card back image, fall back to programmatic
+    return Image.asset(
+      'assets/images/card_back.png',
       width: width,
       height: height,
-      decoration: BoxDecoration(
-        color: GameConstants.panelDark,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: GameConstants.accentCyan, width: 1.5),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(2, 2))],
-      ),
-      child: const Center(child: Icon(Icons.card_travel, color: GameConstants.accentCyan, size: 40)),
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            color: GameConstants.panelDark,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: GameConstants.accentCyan, width: 1.5),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(2, 2))],
+          ),
+          child: const Center(child: Icon(Icons.card_travel, color: GameConstants.accentCyan, size: 40)),
+        );
+      },
     );
   }
 }
