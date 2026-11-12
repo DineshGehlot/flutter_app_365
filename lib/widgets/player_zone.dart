@@ -43,15 +43,27 @@ class PlayerZone extends StatelessWidget {
             Text('Bid: ${player.bid}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
         ]),
         const SizedBox(height: 8),
-        SizedBox(height: 88, child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: player.hand.length,
-          itemBuilder: (context, index) {
+        // Show cards in rows using Wrap so all 13 cards are visible without scrolling
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 4,
+          runSpacing: 6,
+          children: List.generate(player.hand.length, (index) {
             final card = player.hand[index];
             final isMyTurn = currentPlayer && phase == GamePhase.playing;
-            return Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: CardWidget(card: card, faceUp: true, isSelectable: isMyTurn, onTap: isMyTurn ? () => onCardTap!(index) : null));
-          },
-        )),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: CardWidget(
+                card: card,
+                faceUp: true,
+                width: 42,
+                height: 60,
+                isSelectable: isMyTurn,
+                onTap: isMyTurn ? () => onCardTap!(index) : null,
+              ),
+            );
+          }),
+        ),
         if (player.handsWon > 0)
           Text('${player.handsWon} hands', style: const TextStyle(color: GameConstants.textGold, fontSize: 12)),
       ],

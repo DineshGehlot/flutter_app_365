@@ -38,7 +38,7 @@ class GameProvider extends ChangeNotifier {
 
   void setPlayerNames(List<String> names) {
     _playerNames = names;
-    _state = GameState(players: List.generate(4, (i) => Player(index: i, name: names[i])));
+    _state = GameState(players: List.generate(4, (i) => Player(index: i, name: names[i], isHuman: i == 0)));
     _scoreHistory.clear();
     notifyListeners();
   }
@@ -71,6 +71,10 @@ class GameProvider extends ChangeNotifier {
     final allBid = players.every((p) => p.bid != 0);
     if (allBid) {
       _state = _state.copyWith(phase: GamePhase.playing, currentPlayerIndex: _state.leadPlayerIndex);
+      // If lead player is AI, schedule it to play the first card
+      if (!_state.players[_state.leadPlayerIndex].isHuman) {
+        _scheduleAIPlay(_state.leadPlayerIndex);
+      }
     } else {
       final next = (playerIndex + 1) % 4;
       _state = _state.copyWith(currentPlayerIndex: next);
@@ -229,7 +233,7 @@ class GameProvider extends ChangeNotifier {
   }
 
   void resetGame() {
-    _state = GameState(players: List.generate(4, (i) => Player(index: i, name: _playerNames[i])));
+    _state = GameState(players: List.generate(4, (i) => Player(index: i, name: _playerNames[i], isHuman: i == 0)));
     _scoreHistory.clear();
     StorageService.resetGame();
     notifyListeners();
@@ -241,3 +245,4 @@ class GameProvider extends ChangeNotifier {
     super.dispose();
   }
 }
+
