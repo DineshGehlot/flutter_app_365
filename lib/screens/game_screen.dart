@@ -42,11 +42,11 @@ class _GameScreenState extends State<GameScreen> {
           body: Container(
             color: GameConstants.cardTableGreen,
             child: SafeArea(
-              child: Column(
-                children: [
-                  _buildTopBar(game),
-                  Expanded(
-                    child: Padding(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _buildTopBar(game),
+                    Padding(
                       padding: const EdgeInsets.all(8),
                       child: Column(
                         children: [
@@ -87,8 +87,8 @@ class _GameScreenState extends State<GameScreen> {
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -138,7 +138,7 @@ class _GameScreenState extends State<GameScreen> {
           Text(player.name, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
           Text('${player.totalScore}', style: TextStyle(color: GameConstants.textGold, fontSize: 14, fontWeight: FontWeight.bold)),
           if (game.state.phase == GamePhase.bidding && player.bid != 0)
-            Text('Bid: ${player.bid == GameConstants.nillBid ? 'Nill' : player.bid}', style: const TextStyle(color: Colors.white70, fontSize: 10)),
+            Text("Bid: ${player.bid == GameConstants.nillBid ? 'Nill' : player.bid}", style: const TextStyle(color: Colors.white70, fontSize: 10)),
         ],
       ),
     );
@@ -197,13 +197,13 @@ class _GameScreenState extends State<GameScreen> {
                     final p = game.state.players[i];
                     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       Text(p.name, style: const TextStyle(color: Colors.white70)),
-                      Text('Bid: ${p.bid == 0 ? 'Nill' : p.bid}', style: const TextStyle(color: Colors.white70)),
+                      Text("Bid: ${p.bid == 0 ? 'Nill' : p.bid}", style: const TextStyle(color: Colors.white70)),
                       Text('Hands: ${p.handsWon}', style: const TextStyle(color: Colors.white70)),
                       Text('${p.roundScore}', style: TextStyle(color: GameConstants.textGold, fontWeight: FontWeight.bold)),
                     ]);
                   }),
                   const SizedBox(height: 20),
-                  Text('Totals: ${game.state.players.map((p) => p.totalScore).join('  |  ')}', style: const TextStyle(color: Colors.white, fontSize: 16)),
+                  Text('Totals: ${game.state.players.map((p) => p.totalScore).join(String.fromCharCode(124))}', style: const TextStyle(color: Colors.white, fontSize: 16)),
                   const SizedBox(height: 24),
                   SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () => game.startNextRound(), child: const Text('Next Round'))),
                 ],
@@ -255,3 +255,6 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 }
+
+
+
