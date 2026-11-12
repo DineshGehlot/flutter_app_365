@@ -41,6 +41,8 @@ class PlayerZone extends StatelessWidget {
             Container(margin: const EdgeInsets.only(left: 8), padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: GameConstants.textGold.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(4), border: Border.all(color: GameConstants.textGold)), child: Text(player.bid == 0 ? 'Nill' : player.bid.toString(), style: const TextStyle(color: GameConstants.textGold, fontWeight: FontWeight.bold, fontSize: 12))),
           if (phase == GamePhase.playing && player.bid != 0)
             Text('Bid: ${player.bid}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          if (phase == GamePhase.roundOver || phase == GamePhase.gameOver)
+            Text('${player.handsWon} hands', style: const TextStyle(color: GameConstants.textGold, fontSize: 12)),
         ]),
         const SizedBox(height: 8),
         // Show cards in rows using Wrap so all 13 cards are visible without scrolling
@@ -64,7 +66,7 @@ class PlayerZone extends StatelessWidget {
             );
           }),
         ),
-        if (player.handsWon > 0)
+        if (player.handsWon > 0 || phase != GamePhase.playing)
           Text('${player.handsWon} hands', style: const TextStyle(color: GameConstants.textGold, fontSize: 12)),
       ],
     );
@@ -78,13 +80,21 @@ class PlayerZone extends StatelessWidget {
           Text(player.name, style: const TextStyle(color: Colors.white70)),
           if (player.bid != 0 && phase == GamePhase.bidding)
             Text('Bid: ${player.bid == 0 ? 'Nill' : player.bid}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          if (phase == GamePhase.roundOver || phase == GamePhase.gameOver)
+            Text('${player.handsWon} hands', style: const TextStyle(color: GameConstants.textGold, fontSize: 12)),
         ]),
         const SizedBox(height: 8),
-        SizedBox(height: 88, child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: player.hand.length,
-          itemBuilder: (context, index) => Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: CardWidget(card: player.hand[index], faceUp: false)),
-        )),
+        SizedBox(
+          height: 88,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: player.hand.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: CardWidget(card: player.hand[index], faceUp: false),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -95,11 +105,28 @@ class PlayerZone extends StatelessWidget {
       children: [
         Text(player.name, style: const TextStyle(color: Colors.white70, fontSize: 12)),
         const SizedBox(height: 8),
-        SizedBox(width: 48, height: 200, child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          itemCount: player.hand.length,
-          itemBuilder: (context, index) => Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: CardWidget(card: player.hand[index], faceUp: false, width: 40, height: 56)),
-        )),
+        // Show cards in rows using Wrap so all 13 cards are visible without scrolling
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 4,
+          runSpacing: 6,
+          children: List.generate(player.hand.length, (index) {
+            final card = player.hand[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: CardWidget(
+                card: card,
+                faceUp: false,
+                width: 42,
+                height: 60,
+              ),
+            );
+          }),
+        ),
+        if (player.bid != 0)
+          Text('Bid: ${player.bid == 0 ? 'Nill' : player.bid}', style: const TextStyle(color: Colors.white70, fontSize: 12)),
+        if (phase == GamePhase.roundOver || phase == GamePhase.gameOver)
+          Text('${player.handsWon} hands', style: const TextStyle(color: GameConstants.textGold, fontSize: 12)),
       ],
     );
   }
